@@ -22,7 +22,11 @@ module.exports = (socket, io)=>{
                     team1: {teamName: data.roomData.team1, score:0},
                     team2: {teamName: data.roomData.team2, score:0}
                 },
+                fouls:{team1:0, team2:0},
+                timeouts:{team1:0, team2:0},
+                quarter:1,
                 matchdate: data.roomData.date,
+                timer:0,
                 matchtimings: data.roomData.time,
                 users: [data.roomData.fullname]
             })
@@ -35,17 +39,36 @@ module.exports = (socket, io)=>{
             socket.emit("error", {message: error.message});
         }
     })
-
-    socket.on("update_scores", async(scoreData)=>{
-        console.log("update score request", scoreData);
-        if(!scoreData.token){
+    socket.on("update_game_stats", async(data)=>{
+        console.log("update game stats request", data);
+        if(!data.token){
             socket.emit("error", {message:"No token provided"});
             return;
         }
         try {
-            const decoded = jwt.verify(scoreData.token, process.env.JWT_KEY);
-            
+            const decoded = jwt.verify(data.token, process.env.JWT_KEY);
+            const updatedRoom = await Rooms.findByIdAndUpdate(data.DBroomId, 
+                {$set: data.update},
+                {new: true}
+            );
+            if(updatedRoom){
+                io.to(data.roomKey).emit("game_stats_updated", {updatedRoom: updatedRoom});
+            }
+        } catch (error) {
+            console.error("Error updating game stats:", error);
+            console.error("Error updating game stats:", error.message);
+            socket.emit("error", {message: error.message});
+        }
+    })
+
+    socket.on("update_scores", async(scoreData)=>{
+        console.log("update score request", scoreData);
             const updateQuery = {}
+            if(!scoreData.token){
+                socket.emit("error", {message:"No token provided"});
+                return;
+            }
+            try{
             updateQuery[`teams.${scoreData.team}.score`] = scoreData.newScore;
             console.log("updateQuery", updateQuery);
             const updatedRoom = await Rooms.findByIdAndUpdate(scoreData.DBroomId, 

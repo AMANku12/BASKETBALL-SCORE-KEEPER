@@ -2,12 +2,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 /* App container styles */
+/* Modify the #root and .app background rules */
 #root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-image: url("./assets/bgimg.avif");  /* Adjust the path if needed */
+  background-image: url("./assets/bgimg.avif");
   background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .app {
@@ -15,7 +18,14 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image: url("../assets/bgimg.avif"); /* Adjust the path if needed */
+}
+
+/* Add mobile background adjustment */
+@media (max-width: 768px) {
+  #root {
+    background-size: auto;
+    background-attachment: scroll;
+  }
 }
 
 /* Page transition animations */

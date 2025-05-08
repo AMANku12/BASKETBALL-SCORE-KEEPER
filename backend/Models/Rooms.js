@@ -21,6 +21,14 @@ const roomSchema = new mongoose.Schema({
         type:Object,
         required: true
     },
+    fouls: {
+        type: Object,
+        default: { team1: 0, team2: 0 }
+    },
+    timeouts: {
+        type: Object,
+        default: { team1: 0, team2: 0 }
+    },
     matchdate:{
         type:Date,
         required: true
@@ -34,6 +42,14 @@ const roomSchema = new mongoose.Schema({
     },
     messages:{
         type: Array
+    },
+    quarter: {
+        type: Number,
+        default: 1,
+        max: 4
+    },
+    timer: {
+        type: Number, // Timer in seconds
     }
 })
 
