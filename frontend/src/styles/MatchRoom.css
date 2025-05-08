@@ -1,0 +1,438 @@
+/* MatchRoom Component Styling */
+.match-room-container {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeIn 0.5s ease-in-out;
+    background-size: cover;
+  }
+  
+  .match-room-container h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .match-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dark-card);
+    border-radius: 12px;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .match-info p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+  
+  .match-info p span {
+    background-color: var(--primary);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 5px;
+  }
+  
+  .room-id {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background-color: var(--dark-input);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+  }
+  
+  #teamb{
+    background-color: #FF2E54;
+  }
+
+  #teama{
+    background-color: #00C06F;
+  }
+  .room-id h4 {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  
+  .match-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  @media (min-width: 992px) {
+    .match-content {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  /* Scoreboard styles */
+  .scoreboard {
+    background-color: none; /* Keep the background color */
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    opacity: 1; /* Adjust the opacity value (0 to 1) */
+  }
+  
+  .scoreboard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+  }
+  
+  .scoreboard h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+  }
+  
+  .score-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .team-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .team-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: center;
+    padding: 5px 15px;
+    background-color: var(--dark-input);
+    border-radius: 8px;
+    min-width: 120px;
+  }
+  
+  .score-value {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(108, 99, 255, 0.3);
+    animation: pulse 2s infinite;
+  }
+  
+  .score-divider {
+    font-size: 2.5rem;
+    color: var(--text-secondary);
+    margin: 0 5px;
+    align-self: center;
+  }
+  
+  /* Score controls */
+  .score-controls {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    gap: 20px;
+  }
+  
+  .team-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .control-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  .control-buttons button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  .control-buttons .increment {
+    background-color: var(--success);
+    color: white;
+  }
+  
+  .control-buttons .increment:hover {
+    background-color: #00C06F;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 217, 126, 0.3);
+  }
+  
+  .control-buttons .decrement {
+    background-color: var(--error);
+    color: white;
+  }
+  
+  .control-buttons .decrement:hover {
+    background-color: #FF2E54;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 66, 99, 0.3);
+  }
+  
+  /* Score update animation */
+  @keyframes scoreUpdate {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .score-updated {
+    animation: scoreUpdate 0.5s ease-in-out;
+  }
+  
+  /* Chat container styles */
+  .chat-container {
+    background-color: var(--dark-card);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    min-height: 400px;
+  }
+  
+  .chat-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
+  }
+  
+  .chat-container h4 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+  }
+  
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: var(--dark-input);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .message {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: var(--dark-card);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin: 0;
+    animation: messageIn 0.3s ease-out;
+    word-break: break-word;
+  }
+  
+  @keyframes messageIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .message-username {
+    font-weight: 600;
+    color: var(--primary);
+    margin-right: 5px;
+  }
+  
+  .message-text {
+    color: var(--text-primary);
+  }
+  
+  .chat-input {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    padding: 12px 15px;
+    border-radius: 8px;
+    background-color: var(--dark-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+  
+  .chat-input input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(255, 51, 143, 0.2);
+  }
+  
+  .chat-input button {
+    padding: 0 20px;
+    border-radius: 8px;
+    background: linear-gradient(45deg, var(--accent), #FF5EAC);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .chat-input button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 51, 143, 0.3);
+  }
+  
+  /* Owner badge animation */
+  @keyframes glowing {
+    0% {
+      box-shadow: 0 0 5px var(--primary);
+    }
+    50% {
+      box-shadow: 0 0 20px var(--primary);
+    }
+    100% {
+      box-shadow: 0 0 5px var(--primary);
+    }
+  }
+  
+  .match-info p span.owner {
+    animation: glowing 2s infinite;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .match-room-container h1 {
+      font-size: 2rem;
+    }
+    
+    .match-info {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px;
+    }
+    
+    .score-display {
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .score-divider {
+      display: none;
+    }
+    
+    .team-name {
+      min-width: 100%;
+      width: 100%;
+    }
+    
+    .score-controls {
+      flex-direction: column;
+    }
+    
+    .chat-messages {
+      max-height: 250px;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 991px) {
+    .score-display {
+      gap: 15px;
+    }
+    
+    .team-name {
+      min-width: 100px;
+      font-size: 1.1rem;
+    }
+    
+    .score-value {
+      font-size: 3rem;
+    }
+  }
+  
+  /* Live indicator */
+  .live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--error);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    align-self: center;
+  }
+  
+  .live-indicator::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+  }
+  
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 1;
+    }
+  }

@@ -1,14 +1,21 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const roomSchema = new mongoose.Schema({
     roomKey:{
         type: String,
         required: true,
         unique: true,
+        index: true // for faster lookups
     },
     ownername:{
         type:String,
         required: true
+    },
+    ownerId:{
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true  
     },
     teams:{
         type:Object,

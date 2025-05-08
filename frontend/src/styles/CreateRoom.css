@@ -1,0 +1,186 @@
+/* CreateRoom Component Styling */
+.create-room-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    animation: fadeIn 0.5s ease-in-out;
+    background-size: cover;
+    
+  }
+  
+  .create-room-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+  }
+  
+  .create-room-container h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 2px;
+  }
+  
+  .create-room-form {
+    background-color: var(--dark-card);
+    border-radius: 16px;
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .create-room-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+  }
+  
+  .create-room-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .input-group {
+    position: relative;
+  }
+  
+  .input-group input {
+    background-color: var(--dark-input);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    padding-left: 40px;
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+  
+  .input-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+  }
+  
+  .input-group::before {
+    font-family: "Font Awesome 5 Free";
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+  }
+  
+  .input-team1::before {
+    content: "🏆";
+  }
+  
+  .input-team2::before {
+    content: "🥈";
+  }
+  
+  .input-date::before {
+    content: "📅";
+  }
+  
+  .input-time::before {
+    content: "⏰";
+  }
+  
+  .input-key::before {
+    content: "🔑";
+  }
+  
+  .create-room-form button[type="submit"] {
+    background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .create-room-form button[type="submit"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+  }
+  
+  .create-room-form button[type="submit"]:hover::before {
+    left: 100%;
+  }
+  
+  .create-room-form button[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 15px rgba(108, 99, 255, 0.3);
+  }
+  
+  .create-room-form button[type="submit"]:active {
+    transform: translateY(-1px);
+  }
+  
+  /* Form validation animations */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 5px rgba(108, 99, 255, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(108, 99, 255, 0);
+    }
+  }
+  
+  .input-group.error input {
+    border-color: var(--error);
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* Create Room loading animation */
+  .create-room-loading {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .create-room-loading .loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid var(--primary);
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+  

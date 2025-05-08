@@ -1,42 +1,96 @@
-import React, { useEffect, useState } from 'react'
-import socket from "../socket"
+import React, { useState, useEffect, useCallback } from 'react';
+import socket from '../socket'; //  Use the hook
 import { useNavigate } from 'react-router-dom';
+import '../styles/JoinRoom.css';
 
 const JoinRoom = () => {
-    const [fullname, setFullname] = useState("");
-    const [roomKey, setRoomKey] = useState("");
+    const [fullName, setFullName] = useState('');
+    const [roomKey, setRoomKey] = useState('');
     const navigate = useNavigate();
+    const [joinError, setJoinError] = useState('');
+     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(()=>{
-        socket.on("joined_room", (payload)=>{
-            console.log("joined room",payload);
-            console.log("guestname",fullname);
-            navigate("/matchroom", {state:{roomData: payload, guestname:fullname, isowner:false}});
-        })
+    //  *useCallback for Memoization*
+    const handleJoinedRoom = useCallback(
+        (payload) => {
+            console.log('Joined room:', payload);
+            setIsLoading(false);
+            navigate('/matchroom', {
+                state: {
+                    roomData: payload.room,
+                    guestname: fullName,
+                    isOwner: payload.isOwner,
+                },
+            });
+        },
+        [navigate, fullName]
+    );
 
-        return ()=>{
-            socket.off("joined_room");
+    useEffect(() => {
+        const handleJoinRoomError = (error) => {
+            setJoinError(error.message || "Failed to join the room")
+            setIsLoading(false);
         }
-    },[fullname,navigate]);
+        socket.on('joined_room', handleJoinedRoom);
+        socket.on("error", handleJoinRoomError)
 
-    const handleSubmit = (e)=>{
+        return () => {
+            socket.off('joined_room', handleJoinedRoom);
+            socket.off("error", handleJoinRoomError);
+        };
+    }, [handleJoinedRoom]);
+
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const guestdata = { fullname: fullname, roomKey : roomKey}
-        console.log("request for joining room", guestdata);
-        socket.emit("join_room",guestdata );
-    }
+        if(!fullName || !roomKey){
+            setJoinError("Please enter your name and the room key");
+            return;
+        }
+        setIsLoading(true);
+        setJoinError('');
+        const guestdata = { fullname: fullName, roomKey: roomKey };
+        console.log('request for joining room', guestdata);
+        const token = localStorage.getItem('token');
+        socket.emit('join_room', { guestdata, token });
+    };
 
-  return (
-    <div>
-        <h1>Please Enter the following details to enter a room</h1>
-        <form onSubmit={handleSubmit}>
-            <input type="text" placeholder='Enter your name...' value={fullname} name="fullname" onChange={(e)=>{setFullname(e.target.value)}}/>
-            <input type="text" placeholder='Enter the roomkey...' value={roomKey} name='roomKey' onChange={(e)=>{setRoomKey(e.target.value)}}/>
-            <button type='submit'>Join Room</button>
-        </form>
-    </div>
-    
-  )
-}
+    return (
+        <div className="join-room-container">
+            <h1>Please Enter the following details to enter a room</h1>
+             {joinError && <div className="join-error">{joinError}</div>}
+            <div className="join-room-form">
+                <form onSubmit={handleSubmit}>
+                    <div className="join-input-group join-input-name">
+                        <input
+                            type="text"
+                            placeholder="Enter your name..."
+                            value={fullName}
+                            name="fullname"
+                            onChange={(e) => {
+                                setFullName(e.target.value);
+                            }}
+                            required
+                        />
+                    </div>
+                    <div className="join-input-group join-input-key">
+                        <input
+                            type="text"
+                            placeholder="Enter the room key..."
+                            value={roomKey}
+                            name="roomKey"
+                            onChange={(e) => {
+                                setRoomKey(e.target.value);
+                            }}
+                            required
+                        />
+                    </div>
+                    <button type="submit" disabled={isLoading}>
+                        {isLoading ? 'Joining...' :'Join Room'}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
 
-export default JoinRoom
+export default JoinRoom;

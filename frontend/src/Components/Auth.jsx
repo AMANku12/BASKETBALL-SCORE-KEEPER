@@ -1,92 +1,124 @@
-import React, { useContext, useState } from 'react'
-import axios from 'axios'
-import { Navigate, useNavigate } from 'react-router-dom'
-
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import '../styles/Auth.css';
 
 const Auth = () => {
-
     const navigate = useNavigate();
+    const [isLoginMode, setIsLoginMode] = useState(true); // More descriptive name
+    const [loginData, setLoginData] = useState({ email: '', password: '' });
+    const [registerData, setRegisterData] = useState({ fullname: '', email: '', password: '' });
+    const [error, setError] = useState(''); // For displaying errors to the user
+    const [showPassword, setShowPassword] = useState(false);
 
-    const [wanttologin,setWantToLogin] = useState(true);
-    const [loginData, setLoginData] = useState({
-        email: "",
-        password: ""    
-    })
-    const [registerData, setRegisterData] = useState({
-        fullname: "",
-        email: "",
-        password: ""
-    })
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-    const handleLoginSubmit = async(e)=>{
-        e.preventDefault();
+    const authRequest = async (url, data) => {
         try {
-            const response =await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, loginData);
-            // console.log(response.data);
-            if(response.data.message==="Success"){
-                localStorage.setItem("user",JSON.stringify(response.data.user));
-                localStorage.setItem("token",response.data.token);
-                alert("Login Complete");
-                navigate("/")
+            const response = await axios.post(url, data);
+            const { message, user, token } = response.data;
 
-            }else if(response.data.message==="User not found"){
-                alert("User not found");
-            }else if(response.data.message==="Incorrect Passoword"){
-                alert("Incorrect Password");
+            if (message === 'Success') {
+                localStorage.setItem('user', JSON.stringify(user));
+                localStorage.setItem('token', token);
+                alert("Login successful!"); // Optional: Show a success message
+                navigate('/');
+            } else {
+                setError(message); // Set the error message
             }
-        } catch (error) {
-            console.log("error occurred in registeration:", error);
-            alert("ERROR");
+        } catch (err) {
+            console.error('Authentication error:', err);
+            setError('An unexpected error occurred. Please try again.');
         }
-    }
+    };
 
-    const handleRegisterSubmit = async(e)=>{
+    const handleLoginSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response =await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, registerData);
-            console.log(response.data);
-            if(response.data.message==="Success"){
-                localStorage.setItem("user",JSON.stringify(response.data.user));
-                localStorage.setItem("token",response.data.token);
-                alert("Registeration Complete");
-                navigate("/")
-            }else if(response.data.message==="existing user"){
-                alert("User allready exists");
-            }
-        } catch (error) {
-            console.log("error occurred in registeration:", error);
-            alert("ERROR");
-        }
-    }
+        await authRequest(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, loginData);
+    };
 
-  return (
-    <div>
-      {wanttologin ? (
-        <div className="login">
-            <h2>Login</h2>
-            <form onSubmit={handleLoginSubmit}>
-                <input type="email" placeholder='Enter emailid' onChange={(e) => setLoginData({...loginData, email: e.target.value})}/>
-                <input type="password" placeholder='Enter the password' onChange={(e) => setLoginData({...loginData, password: e.target.value})} />
-                <button type='submit'>Submit</button>
-                <p>Don't have an account?</p>
-                <button onClick={() => {setWantToLogin(false)}}>Register</button>
-            </form>
-        </div>
-      ):(
-        <div className="login">
-            <h2>Register</h2>
-            <form onSubmit={handleRegisterSubmit}>
-                <input type="text" placeholder='Enter your name' onChange={(e)=> setRegisterData({...registerData, fullname: e.target.value})} />
-                <input type="email" placeholder='Enter emailid' onChange={(e)=> setRegisterData({...registerData, email: e.target.value})}/>
-                <input type="password" placeholder='Set a password' onChange={(e)=> setRegisterData({...registerData, password: e.target.value})}/>
-                <button type='submit'>Submit</button>
-                <p>Already have an account?</p>
-                <button onClick={() => {setWantToLogin(true)}}>Login</button>
-            </form>
-        </div>
-      )}
-    </div>
-    )
-}
+    const handleRegisterSubmit = async (e) => {
+        e.preventDefault();
+        await authRequest(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, registerData);
+    };
 
-export default Auth
+    return (
+        <div className="auth-container">
+            {error && <div className="auth-error">{error}</div>}  {/* Display errors to the user */}
+            {isLoginMode ? (
+                <div className="login">
+                    <h2>Login</h2>
+                    <form className="form" onSubmit={handleLoginSubmit}>
+                        <input
+                            type="email"
+                            placeholder="Enter email"
+                            className="form-input"
+                            value={loginData.email}
+                            onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Enter password"
+                            className="form-input"
+                            value={loginData.password}
+                            onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                        />
+                        <button type="submit">Login</button>
+                        <p>Don't have an account?</p>
+                        <button type="button" onClick={() => setIsLoginMode(false)}>
+                            Register
+                        </button>
+                    </form>
+                </div>
+            ) : (
+                <div className="login">
+                    <h2>Register</h2>
+                    <form className="form" onSubmit={handleRegisterSubmit}>
+                    <label htmlFor="fullname">Full Name</label>
+                        <input
+                            type="text"
+                            id="fullname"
+                            placeholder="Enter your full name"
+                            className="form-input"
+                            value={registerData.fullname}
+                            onChange={(e) => setRegisterData({ ...registerData, fullname: e.target.value })}
+                            required
+                            autoComplete="name"
+                        />
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            className="form-input"
+                            value={registerData.email}
+                            onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+                            required
+                            autoComplete="email"
+                        />
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            id="password"
+                            placeholder="Set a password"
+                            className="form-input"
+                            value={registerData.password}
+                            onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+                            required
+                            minLength="6"
+                        />
+                        <button type="submit">Register</button>
+                        <p>Already have an account?</p>
+                        <button type="button" onClick={() => setIsLoginMode(true)}>
+                            Login
+                        </button>
+                    </form>
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default Auth;
