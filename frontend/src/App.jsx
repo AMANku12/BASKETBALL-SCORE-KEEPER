@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Components/Header';
@@ -7,8 +7,14 @@ import Home from './Components/Home';
 import CreateRoom from './Components/CreateRoom';
 import MatchRoom from './Components/MatchRoom';
 import JoinRoom from './Components/JoinRoom';
+import socket from './socket';
 
 function App() {
+  useEffect(()=>{
+    socket.connect();          // connect once globally
+    return ()=> socket.disconnect();
+  },[])
+
   return (
     <div className="app">
       <div className="app-background"></div>

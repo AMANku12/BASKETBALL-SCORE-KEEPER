@@ -4,8 +4,9 @@ import '../styles/Home.css';
 
 const Home = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    // const token = localStorage.getItem('token');
     const [alertMessage, setAlertMessage] = useState('');
+    const storeduser = JSON.parse(localStorage.getItem("user"));
 
     const showAlert = useCallback((message) => {
         setAlertMessage(message);
@@ -13,7 +14,7 @@ const Home = () => {
     }, []);
 
     const handleCreateMatchClick = () => {
-        if (token) {
+        if (storeduser) {
             navigate('/createroom');
         } else {
             showAlert('Please log in to create a match.');

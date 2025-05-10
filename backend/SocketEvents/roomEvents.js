@@ -1,10 +1,16 @@
 const jwt = require("jsonwebtoken");
 const Rooms = require("../Models/Rooms.js")
+const cookie = require("cookie");
 
 module.exports = (socket, io)=>{
     socket.on("create_room", async(data)=>{
-        const token = data.token;
+        // const token = data.token;
         // console.log(roomData)
+        const cookies = socket.handshake.headers.cookie;
+        const parsedCookies = cookie.parse(cookies || "");
+        const token = parsedCookies.token;
+        console.log("raw cookie" , cookies)
+        console.log("token", token);
 
         if(!token){
             socket.emit("error", {message:"No token provided"});
@@ -39,48 +45,33 @@ module.exports = (socket, io)=>{
             socket.emit("error", {message: error.message});
         }
     })
-    socket.on("update_game_stats", async(data)=>{
-        console.log("update game stats request", data);
-        if(!data.token){
-            socket.emit("error", {message:"No token provided"});
-            return;
-        }
-        try {
-            const decoded = jwt.verify(data.token, process.env.JWT_KEY);
-            const updatedRoom = await Rooms.findByIdAndUpdate(data.DBroomId, 
-                {$set: data.update},
-                {new: true}
-            );
-            if(updatedRoom){
-                io.to(data.roomKey).emit("game_stats_updated", {updatedRoom: updatedRoom});
-            }
-        } catch (error) {
-            console.error("Error updating game stats:", error);
-            console.error("Error updating game stats:", error.message);
-            socket.emit("error", {message: error.message});
-        }
-    })
 
     socket.on("update_scores", async(scoreData)=>{
         console.log("update score request", scoreData);
+        const cookies = socket.handshake.headers.cookie;
+        const parsedCookies = cookie.parse(cookies || "");
+        const token = parsedCookies.token;
+
             const updateQuery = {}
-            if(!scoreData.token){
+            if(!token){
                 socket.emit("error", {message:"No token provided"});
                 return;
             }
             try{
-            updateQuery[`teams.${scoreData.team}.score`] = scoreData.newScore;
-            console.log("updateQuery", updateQuery);
-            const updatedRoom = await Rooms.findByIdAndUpdate(scoreData.DBroomId, 
-                {$set: updateQuery},
-                {new: true}
-            );
-            if(updatedRoom){
-                console.log(updatedRoom.teams);
-                io.to(scoreData.roomKey).emit("scores_updated", updatedRoom.teams);
-            }else{
-                console.log(scoreData.DBroomId, "-no such room id in DB");
-            }
+                const decoded = jwt.verify(token, process.env.JWT_KEY);
+
+                updateQuery[`teams.${scoreData.team}.score`] = scoreData.newScore;
+                console.log("updateQuery", updateQuery);
+                const updatedRoom = await Rooms.findByIdAndUpdate(scoreData.DBroomId, 
+                    {$set: updateQuery},
+                    {new: true}
+                );
+                if(updatedRoom){
+                    console.log(updatedRoom.teams);
+                    io.to(scoreData.roomKey).emit("scores_updated", updatedRoom.teams);
+                }else{
+                    console.log(scoreData.DBroomId, "-no such room id in DB");
+                }
         } catch (error) {
             console.error("Error updating scores:", error);
             socket.emit("error", {message: error.message});
@@ -88,8 +79,12 @@ module.exports = (socket, io)=>{
     })
 
     socket.on("join_room", async(data)=>{
-        const token = data.token;
-        console.log("token, roomkey", token, data.guestdata.roomKey);
+        const cookies = socket.handshake.headers.cookie;
+        const parsedCookies = cookie.parse(cookies || "");
+        const token = parsedCookies.token;
+
+        // console.log("token, roomkey", token, data.guestdata.roomKey);
+
         const room = await Rooms.findOne({roomKey: data.guestdata.roomKey}).lean(); // .lean() to get a plain JS object instead of Mongoose document
             console.log("new join room request from",socket.id);
             console.log("room data", room);
@@ -114,6 +109,7 @@ module.exports = (socket, io)=>{
         }else{
             try {
                 const decoded = jwt.verify(token, process.env.JWT_KEY);
+
                 if(room.ownerId.toString() === decoded.userId.toString()){
                     console.log("owner joined the room", decoded.userId);
                     socket.join(data.guestdata.roomKey);

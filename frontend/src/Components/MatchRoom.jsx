@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import socket from '../socket'; //  Use the hook
+import socket from '../socket'; // Use the hook
 import '../styles/MatchRoom.css';
 
 const MatchRoom = () => {
     const location = useLocation();
     const data = location.state;
     console.log(data);
+
     const [score, setScore] = useState({
         team1: data.roomData.teams.team1.score,
         team2: data.roomData.teams.team2.score,
@@ -47,19 +48,16 @@ const MatchRoom = () => {
 
     const handleScoreChange = (team, change) => {
         console.log('update score clicked:', team, change);
-        const token = localStorage.getItem('token');
-        if(!token) {
-            setError("No token provided. Please log in to update scores.");
-            return;
-        }
+        // const token = localStorage.getItem('token');
+
         const scoreData = {
             roomKey: data.roomData.roomKey,
             team: team,
             newScore: score[team] + change,
             DBroomId: data.roomData._id,
-            token: token,
+            // token: token,
         };
-        socket.emit('update_scores', scoreData );
+        socket.emit('update_scores', scoreData);
     };
 
     const handleSendMessage = () => {
@@ -77,7 +75,7 @@ const MatchRoom = () => {
     return (
         <div className="match-room-container">
             <h1>Welcome To The Match Room</h1>
-             {error && <div className="error">{error}</div>}
+            {error && <div className="error">{error}</div>}
             <div className="match-info">
                 <p>RoomId: {data.roomData.roomKey}</p>
                 <p>Owner: {data.roomData.ownername}</p>
@@ -89,53 +87,53 @@ const MatchRoom = () => {
                 </p>
             </div>
             <div className="scoreboard">
-    <h4>Live Scoreboard</h4>
-    <div className="score-display">
-        <div className="team-score">
-            <div className="team-name" id='teama'>{data.roomData.teams.team1.teamName}</div>
-            <div className="score-value">{score.team1}</div>
-        </div>
-        
-        <div className="score-divider">:</div>
-        
-        <div className="team-score">
-            <div className="team-name" id='teamb'>{data.roomData.teams.team2.teamName}</div>
-            <div className="score-value">{score.team2}</div>
-        </div>
-    </div>
-    
-    {data.isOwner && (
-        <div className="score-controls">
-            <div className="team-controls">
-                <div className="control-buttons">
-                    <button className="increment" onClick={() => handleScoreChange('team1', 1)}>
-                        +1
-                    </button>
-                    <button className="increment" onClick={() => handleScoreChange('team1', 2)}>
-                        +2
-                    </button>
-                    <button className="increment" onClick={() => handleScoreChange('team1', 3)}>
-                        +3
-                    </button>
+                <h4>Live Scoreboard</h4>
+                <div className="score-display">
+                    <div className="team-score">
+                        <div className="team-name" id="teama">{data.roomData.teams.team1.teamName}</div>
+                        <div className="score-value">{score.team1}</div>
+                    </div>
+
+                    <div className="score-divider">:</div>
+
+                    <div className="team-score">
+                        <div className="team-name" id="teamb">{data.roomData.teams.team2.teamName}</div>
+                        <div className="score-value">{score.team2}</div>
+                    </div>
                 </div>
+
+                {data.isOwner && (
+                    <div className="score-controls">
+                        <div className="team-controls">
+                            <div className="control-buttons">
+                                <button className="increment" onClick={() => handleScoreChange('team1', 1)}>
+                                    +1
+                                </button>
+                                <button className="increment" onClick={() => handleScoreChange('team1', 2)}>
+                                    +2
+                                </button>
+                                <button className="increment" onClick={() => handleScoreChange('team1', 3)}>
+                                    +3
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="team-controls">
+                            <div className="control-buttons">
+                                <button className="decrement" onClick={() => handleScoreChange('team2', 1)}>
+                                    +1
+                                </button>
+                                <button className="decrement" onClick={() => handleScoreChange('team2', 2)}>
+                                    +2
+                                </button>
+                                <button className="decrement" onClick={() => handleScoreChange('team2', 3)}>
+                                    +3
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
-            
-            <div className="team-controls">
-                <div className="control-buttons">
-                    <button className="decrement" onClick={() => handleScoreChange('team2', 1)}>
-                        +1
-                    </button>
-                    <button className="decrement" onClick={() => handleScoreChange('team2', 2)}>
-                        +2
-                    </button>
-                    <button className="decrement" onClick={() => handleScoreChange('team2', 3)}>
-                        +3
-                    </button>
-                </div>
-            </div>
-        </div>
-    )}
-</div>
             <div className="chat-container">
                 <h4>Chat</h4>
                 <div className="chat-messages">

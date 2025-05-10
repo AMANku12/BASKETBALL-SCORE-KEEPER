@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Auth.css';
+import socket from "../socket";
 
 const Auth = () => {
     const navigate = useNavigate();
@@ -11,26 +12,27 @@ const Auth = () => {
     const [error, setError] = useState(''); // For displaying errors to the user
     const [showPassword, setShowPassword] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
 
     const authRequest = async (url, data) => {
         try {
-            const response = await axios.post(url, data);
-            const { message, user, token } = response.data;
+            const response = await axios.post(url, data, {withCredentials: true});
+            const { message, user} = response.data;
 
             if (message === 'Success') {
                 localStorage.setItem('user', JSON.stringify(user));
-                localStorage.setItem('token', token);
+                // localStorage.setItem('token', token);
                 alert("Login successful!"); // Optional: Show a success message
                 navigate('/');
+                socket.disconnect();
+                socket.connect();  // reconnect to include new cookies
             } else {
                 setError(message); // Set the error message
+                alert(error)
             }
         } catch (err) {
             console.error('Authentication error:', err);
             setError('An unexpected error occurred. Please try again.');
+            alert(error)
         }
     };
 
@@ -46,7 +48,7 @@ const Auth = () => {
 
     return (
         <div className="auth-container">
-            {error && <div className="auth-error">{error}</div>}  {/* Display errors to the user */}
+            {/* {error && <div className="auth-error">Error: {error}</div>}  Display errors to the user */}
             {isLoginMode ? (
                 <div className="login">
                     <h2>Login</h2>

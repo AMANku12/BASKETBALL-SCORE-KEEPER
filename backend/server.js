@@ -10,7 +10,11 @@ const AuthRouter = require("./Routes/auth.route.js");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173", "https://basketball-score-keeper-git-main-aman-kumars-projects-8babd2a9.vercel.app"],
+    credentials: true
+}));
+
 
 mongoose.connect(process.env.MONGODB_URL).then(()=>{
     console.log("Connected to MongoDB");
@@ -20,8 +24,9 @@ mongoose.connect(process.env.MONGODB_URL).then(()=>{
 
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors:{
-        origin: "*",
+    cors: {
+        origin: ["http://localhost:5173", "https://basketball-score-keeper-git-main-aman-kumars-projects-8babd2a9.vercel.app"],
+        credentials: true
     }
 })
 

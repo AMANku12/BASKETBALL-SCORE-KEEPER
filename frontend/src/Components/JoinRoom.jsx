@@ -50,8 +50,8 @@ const JoinRoom = () => {
         setJoinError('');
         const guestdata = { fullname: fullName, roomKey: roomKey };
         console.log('request for joining room', guestdata);
-        const token = localStorage.getItem('token');
-        socket.emit('join_room', { guestdata, token });
+        // const token = localStorage.getItem('token');
+        socket.emit('join_room', { guestdata });
     };
 
     return (

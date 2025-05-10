@@ -52,8 +52,8 @@ const CreateRoom = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (validateForm()) {
-            const token = localStorage.getItem('token');
-            socket.emit('create_room', { roomData, token });
+            // const token = localStorage.getItem('token');
+            socket.emit('create_room', { roomData});
         }
     };
 
@@ -107,6 +107,7 @@ const CreateRoom = () => {
                             name='roomKey'
                             value={roomData.roomKey}
                             onChange={handleChange}
+                            minLength={6}
                         />
                     </div>
                     <button type="submit">Create Room</button>

@@ -20,7 +20,13 @@ const login = async(req,res)=>{
         existinguser.password = undefined;
 
         console.log("new token", token);
-        res.status(201).json({message:"Success",token, user:existinguser});
+        res.status(201).cookie("token", token, {
+            httpOnly: true,
+            secure: true, // set to true in production with HTTPS
+            sameSite: "None",
+            maxAge: 24 * 60 * 60 * 1000
+        }).json({ message: "Success", user: existinguser });
+
     } catch (error) {
         console.log(error);
         res.status(500).json({error: "server error in login"});
@@ -29,7 +35,7 @@ const login = async(req,res)=>{
 
 const register = async(req,res)=>{
     const {fullname,email,password}=req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
     try {
         const existinguser =await User.findOne({email});
@@ -46,7 +52,12 @@ const register = async(req,res)=>{
         newuser.password = undefined;
 
         console.log("new token", token);
-        res.status(201).json({message:"Success",token, user:newuser});
+        res.status(201).cookie("token",token,{
+            httpOnly:true,
+            secure: false,
+            sameSite: "Strict",
+            maxAge: 24* 60* 60* 1000
+       }).json({message:"Success", user:newuser});
         
     } catch (error) {
         console.log(error);
