@@ -54,8 +54,8 @@ const register = async(req,res)=>{
         console.log("new token", token);
         res.status(201).cookie("token",token,{
             httpOnly:true,
-            secure: false,
-            sameSite: "Strict",
+            secure: true,
+            sameSite: "None",
             maxAge: 24* 60* 60* 1000
        }).json({message:"Success", user:newuser});
         
